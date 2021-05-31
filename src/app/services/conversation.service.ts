@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { AngularFirestore, AngularFirestoreCollection, QueryDocumentSnapshot, QuerySnapshot, } from "@angular/fire/firestore";
+import { AngularFirestore, AngularFirestoreCollection, QueryDocumentSnapshot } from "@angular/fire/firestore";
 import { Observable, from, of } from "rxjs";
 
-import { switchMap, map, take, filter } from "rxjs/operators";
+import { switchMap, map, take } from "rxjs/operators";
 import { UserService } from "./user.service";
 
 @Injectable({
@@ -43,47 +43,6 @@ export class ConversationService {
     return this.afs.collection<AFCA.Conversation>("conversations").valueChanges();
   }
 
-  public readMessages(
-    conversationId: string,
-    last?: QueryDocumentSnapshot<AFCA.Message>
-  ): Observable<{messages: AFCA.Message[], last: QueryDocumentSnapshot<AFCA.Message>}> {
-    return this.afs.collection<AFCA.Conversation>("conversations")
-      .doc(conversationId)
-      .collection<AFCA.Message>("messages", (ref) => {
-        if (last) {
-          return ref.orderBy("timeStampCreated", "desc")
-            .startAfter(last.data().timeStampCreated)
-            .limit(25);
-        } else {
-          return ref.orderBy("timeStampCreated", "desc")
-            .limit(25);
-        }
-      })
-      .get()
-      .pipe(
-        switchMap((snapshot: QuerySnapshot<AFCA.Message>) => {
-          const lastSnapshot: QueryDocumentSnapshot<AFCA.Message> = snapshot.docs[snapshot.docs.length - 1];
-          const messages = snapshot.docs.map((doc: QueryDocumentSnapshot<AFCA.Message>) => {
-            return doc.data();
-          }) as AFCA.Message[];
-
-          return of({ messages, last: lastSnapshot });
-        }),
-      );
-  }
-
-  public listenForMessages(conversationId: string): Observable<AFCA.Message> {
-    return this.afs.collection<AFCA.Conversation>("conversations")
-      .doc(conversationId)
-      .valueChanges()
-      .pipe(
-        filter((conversation) => !!conversation?.mostRecentMessage),
-        map((conversation: AFCA.Conversation | undefined) => {
-          return conversation?.mostRecentMessage as AFCA.Message;
-        })
-      );
-  }
-
   public updateConversation(conversation: AFCA.Conversation): Observable<AFCA.Conversation> {
     let conversationsCollection: AngularFirestoreCollection<AFCA.Conversation>;
     conversationsCollection = this.afs.collection<AFCA.Conversation>("conversations");
@@ -118,35 +77,6 @@ export class ConversationService {
     return from(conversationsCollection.doc(conversationId).valueChanges()).pipe(take(1));
   }
 
-  public sendMessage(conversationId: string, message: AFCA.CreateMessageRequest): any {
-    let newMessage: AFCA.Message;
-    return from(this.afs.collection<AFCA.Conversation>("conversations")
-      .doc(conversationId)
-      .collection<AFCA.CreateMessageRequest>("messages")
-      .add(message)
-    ).pipe(
-      switchMap((documentReference) => {
-        return documentReference.get();
-      }),
-      map((documentSnapshot) => {
-        return {
-          id: documentSnapshot.id,
-          ...documentSnapshot.data()
-        } as AFCA.Message;
-      }),
-      switchMap((message: AFCA.Message) => {
-        newMessage = message;
-        return this.updateMessage(conversationId, message);
-      }),
-      switchMap((message) => {
-        return this.afs.collection<AFCA.Conversation>("conversations")
-          .doc(conversationId)
-          .update({ mostRecentMessage: message });
-      }),
-      map(() => newMessage)
-    );
-  }
-
   public updateMessage(conversationId: string, message: AFCA.Message): Observable<AFCA.Message> {
     return from(
       this.afs.collection<AFCA.Conversation>("conversations")
@@ -160,5 +90,20 @@ export class ConversationService {
         return message;
       })
     );
+  }
+
+  public readMessages(
+    conversationId: string,
+    last?: QueryDocumentSnapshot<AFCA.Message>
+  ): Observable<{messages: AFCA.Message[], last: QueryDocumentSnapshot<AFCA.Message>}> {
+    return of();
+  }
+
+  public listenForMessages(conversationId: string): Observable<AFCA.Message> {
+    return of();
+  }
+
+  public sendMessage(conversationId: string, message: AFCA.CreateMessageRequest): Observable<AFCA.Message> {
+    return of();
   }
 }
