@@ -1,0 +1,18 @@
+<div class="afca-conversation">
+
+  <div #messagesElement afcaScrollable (scrollPosition)="scrollHandler($event)" class="afca-conversation__messages">
+    <afca-message
+      *ngFor="let message of messages; trackBy: trackMessage"
+      [message]="message"
+      [currentUser]="user"
+      [users]="users"
+    >
+    </afca-message>
+  </div>
+
+  <form [formGroup]="conversationForm" class="afca-conversation__form" (ngSubmit)="sendMessage()">
+    <textarea #textInput class="afca-conversation__form-input" matInput formControlName="text" placeholder="Aa"></textarea>
+    <button mat-raised-button color="primary">Send</button>
+  </form>
+
+</div>

@@ -1,0 +1,46 @@
+.afca-conversations {
+  display: flex;
+  height: 100%;
+  width: 100%;
+
+  &__list {
+    background-color: #666666;
+    display: flex;
+    flex: 20;
+    flex-direction: column;
+    height: 100%;
+    min-width: 20rem;
+  }
+
+  &__conversation {
+    align-items: center;
+    background-color: #5a5a5a;
+    cursor: pointer;
+    display: flex;
+    padding: 1rem;
+
+    &:hover {
+      background-color: #4d4d4d;
+    }
+
+    &.-active {
+      background-color: #4d4d4d;
+    }
+
+    &-image {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+    }
+
+    &-text {
+      color: white;
+      padding-left: 1rem;
+    }
+  }
+
+  &__current {
+    flex: 80;
+    height: 100%
+  }
+}

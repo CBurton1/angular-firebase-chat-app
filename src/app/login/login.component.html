@@ -1,0 +1,34 @@
+<form [formGroup]="loginForm" (ngSubmit)="login()" class="afca-login">
+
+  <h2 class="afca-login__title">Login</h2>
+
+  <mat-form-field class="afca-login__field" appearance="outline">
+    <mat-label>Email</mat-label>
+    <input type="email" matInput formControlName="email" placeholder="Email">
+    <mat-error *ngIf="loginForm.controls['email'].hasError('required')">
+      Email is <strong>required</strong>
+    </mat-error>
+    <mat-error *ngIf="loginForm.controls['email'].hasError('email')">
+      Email is <strong>invalid</strong>
+    </mat-error>
+    <mat-error *ngIf="loginForm.controls['email'].hasError('loginError')">
+      {{ loginForm.controls['email'].errors?.loginError }}
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field class="afca-login__field" appearance="outline">
+    <mat-label>Password</mat-label>
+    <input type="password" matInput formControlName="password" placeholder="Password">
+    <mat-error *ngIf="loginForm.controls['password'].hasError('required')">
+      Password is <strong>required</strong>
+    </mat-error>
+    <mat-error *ngIf="loginForm.controls['password'].hasError('loginError')">
+      {{ loginForm.controls['password'].errors?.loginError }}
+    </mat-error>
+  </mat-form-field>
+
+  <button class="afca-login__submit" mat-raised-button color="primary" [class.spinner]="loginSubmitting" [disabled]="loginSubmitting">
+    Login
+  </button>
+
+</form>

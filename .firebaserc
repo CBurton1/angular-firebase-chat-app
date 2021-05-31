@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "angular-firebase-chat-ap-59496": {
+      "hosting": {
+        "angular-firebase-chat-app": [
+          "angular-firebase-chat-ap-59496"
+        ]
+      }
+    }
+  }
+}

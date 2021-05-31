@@ -1,0 +1,21 @@
+<div class="afca-conversations">
+
+  <div class="afca-conversations__list">
+    <div
+      *ngFor="let conversation of userConversations"
+      class="afca-conversations__conversation"
+      [ngClass]="{'-active': conversation.id === currentConversation.id }"
+    >
+      <img [src]="conversation.mostRecentMessage.user?.profileUrl" class="afca-conversations__conversation-image"/>
+      <p class="afca-conversations__conversation-text">{{ conversation.mostRecentMessage.text }}</p>
+    </div>
+  </div>
+
+  <afca-conversation
+    class="afca-conversations__current"
+    [conversation]="currentConversation"
+    [user]="user"
+    [users]="users"
+  >
+  </afca-conversation>
+</div>
